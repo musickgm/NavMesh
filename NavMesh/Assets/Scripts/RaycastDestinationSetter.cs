@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Set destination for robot to go
+/// </summary>
 public class RaycastDestinationSetter : MonoBehaviour {
 
 	public float fireRate = 0.25f;                                      // Number in seconds which controls how often the player can fire
 	public float weaponRange = 500f;                                     // Distance in Unity units over which the player can fire
 	public Transform gunEnd;                                            // Holds a reference to the gun end object, marking the muzzle location of the gun
+	public DirectedAgent directedAgent;									//Agent to direct
 
 	private Camera fpsCam;                                              // Holds a reference to the first person camera
 	private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);    // WaitForSeconds object used by our ShotEffect coroutine, determines time laser line will remain visible
@@ -52,7 +56,7 @@ public class RaycastDestinationSetter : MonoBehaviour {
 			{
 				// Set the end position for our laser line 
 				laserLine.SetPosition (1, hit.point);
-
+				directedAgent.MoveToLocation(hit.point);
 			}
 			else
 			{
