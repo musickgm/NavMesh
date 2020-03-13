@@ -9,8 +9,10 @@ public class RaycastDestinationSetter : MonoBehaviour {
 	public float fireRate = 0.25f;                                      // Number in seconds which controls how often the player can fire
 	public float weaponRange = 500f;                                     // Distance in Unity units over which the player can fire
 	public Transform gunEnd;                                            // Holds a reference to the gun end object, marking the muzzle location of the gun
-	public DirectedAgent directedAgent;									//Agent to direct
+	public DirectedAgent[] directedAgents;
 
+
+	private DirectedAgent directedAgent;                                    //Agent to direct
 	private Camera fpsCam;                                              // Holds a reference to the first person camera
 	private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);    // WaitForSeconds object used by our ShotEffect coroutine, determines time laser line will remain visible
 	private AudioSource gunAudio;                                       // Reference to the audio source which will play our shooting sound effect
@@ -20,6 +22,8 @@ public class RaycastDestinationSetter : MonoBehaviour {
 
 	void Start () 
 	{
+		directedAgent = directedAgents[0];
+
 		// Get and store a reference to our LineRenderer component
 		laserLine = GetComponent<LineRenderer>();
 
@@ -33,6 +37,23 @@ public class RaycastDestinationSetter : MonoBehaviour {
 
 	void Update () 
 	{
+		if (Input.GetKeyDown(KeyCode.Alpha1))
+		{
+			SetAgent(0);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha2))
+		{
+			SetAgent(1);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha3))
+		{
+			SetAgent(2);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha4))
+		{
+			SetAgent(3);
+		}
+
 		// Check if the player has pressed the fire button and if enough time has elapsed since they last fired
 		if (Input.GetButtonDown("Fire1") && Time.time > nextFire) 
 		{
@@ -80,5 +101,11 @@ public class RaycastDestinationSetter : MonoBehaviour {
 
 		// Deactivate our line renderer after waiting
 		laserLine.enabled = false;
+	}
+
+	private void SetAgent(int agentNumber)
+	{
+		directedAgent = directedAgents[agentNumber];
+		print("Current agent = " + agentNumber);
 	}
 }
