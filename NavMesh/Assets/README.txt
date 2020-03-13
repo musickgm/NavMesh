@@ -22,7 +22,7 @@ and things of that nature.
 Bonus1) [5; 4:00] You can lock the inspector and shift click on items to auto-fill an array/list. This is huge
 if you have a big list and do not want to populate it one object at a time. 
 Bonus2) [6; 3:50] There isn't currently support for 2D unity assets. Though 3D objects can be used in a 2D scene
-to make this work. 
+to make this work.  
 
 THE CHANGE:
 Portals between opposite  walls?
