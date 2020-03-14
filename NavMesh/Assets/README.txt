@@ -25,16 +25,26 @@ Bonus2) [6; 3:50] There isn't currently support for 2D unity assets. Though 3D o
 to make this work.  
 
 THE CHANGE:
-Portals between opposite  walls?
-Multiple agent (current agent is the one closest to target?)
-Collectables? Use coins from maze - make agents collect them?
-Add UI with instructions, controls, etc. 
-
+For this project, the changes I made to the original tutorial included gamification. The player has 4 different
+robots that they are directing to access 4 different coins (the win condition). The score decreases over time
+and increases when coins are collected. The environment has been customized so that each agent has a different
+navmesh and thus can only access 1 coin. 
+Red - can go up slopes.
+Purple - can use a series of links.
+Yellow - can go up steps.
+Green - can go through a narrow entrance.
+The player can select which robot they are currently using by pressing numbers (colors indicated by a UI)
+at the top of the screen. The areas that each robot can access are also indicated by the color of the area.
 
 ISSUES & SOLUTIONS:
-
+The main issue was just further learning of how to best handle navmeshes. I originally had 5 separate parent
+environment objects (1 for everyone and 1 for each of the 4 robots). This caused unnecessary complexity so 
+I ended up just using one environment parent that housed all the 4 different navmeshes. Other issues involved
+adjusting parameters so that only one robot could access each area. This was more just an iterative process
+than an actual problem. 
 
 
 SOURCES:
-Tutorial assets acquired from: http://bit.ly/navmeshunity
-Unity tutorial (RuntimeNavMesh Generation) - https://learn.unity.com/tutorial/5c515372edbc2a002069505f
+-Tutorial assets acquired from: http://bit.ly/navmeshunity
+-Unity tutorial (RuntimeNavMesh Generation) - https://learn.unity.com/tutorial/5c515372edbc2a002069505f
+-Coin SFX from Phys 1 (a game I developed). 

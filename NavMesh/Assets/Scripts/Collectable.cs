@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Class to account for all types of collectables
+/// Class for collectables
 /// </summary>
 public class Collectable : MonoBehaviour
 {
     public enum CollectableType {Coin, Camera, Invisible, Objective};
 
     public CollectableType collectableType;             //What type of collectable?
-    public float rotationValue;                         //How quickly the object should rotate
+    public float rotationValue;                         //How quickly the object should rotate?
+    public float coinValue;                             //How much value is the coin? 
     public AudioClip _clip;                             //Audio clip associated with collecting this item
+    public GameManager gameManager;                     //Reference to the gamemanager
 
 
 
@@ -24,12 +26,12 @@ public class Collectable : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //If the object is a player...
+        //If the object is a robot...
         if(other.CompareTag("AI"))
         {
 
             //Tell the game manager the type of object collected and the sfx to play.
-            //GameManager.Instance.CollectObject(collectableType, _clip);
+            gameManager.CollectItem(coinValue, _clip);
 
             //Then destroy this object
             Destroy(gameObject);

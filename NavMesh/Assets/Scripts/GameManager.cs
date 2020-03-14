@@ -10,12 +10,14 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     #region Public Variables
-    public int gameTime = 60;                       //How long the game should last
+    public int startingScore = 200;                 //Score to start with
+    public int numberOfCoins = 4;                   //How many collectables to win? 
+    public float secondsBetweenReduction;           //How many seconds between point reduction?
+    public int scoreReductionValue;                 //How many points to reduce?
     public Text scoreText;                          //Text displaying the score
-    public Text timeText;                           //Text displaying remaining time
     public CanvasGroup popupGroup;                  //Displays the initial and final instructions
     public Text popupText;                          //Pop up text for instructions
-    public AudioClip collectAudio;                  //Audio played when we collect (on pillow)
+    
     [HideInInspector]
     public bool initialWait = true;                 //Bool handling initial game logic
     [HideInInspector]
@@ -26,7 +28,7 @@ public class GameManager : MonoBehaviour
     private float score = 0;
     private readonly float initialWaitTime = 3.5f;
     private IEnumerator popupCoroutine;
-    private IEnumerator gameCoroutine;
+    private IEnumerator scoreCoroutine;
 
     #endregion
 
@@ -37,17 +39,15 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         initialWait = true;
-        //Hide the cursor
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = false;
+
         //Set initial score/time
+        score = startingScore;
         UpdateScore();
-        timeText.text = gameTime.ToString();
         //Start initial coroutines
         popupCoroutine = InstructionFade(0, initialWaitTime, 2);
         StartCoroutine(popupCoroutine);
-        gameCoroutine = GameTime(initialWaitTime);
-        StartCoroutine(gameCoroutine);
+        scoreCoroutine = ScoreReducer(initialWaitTime);
+        StartCoroutine(scoreCoroutine);
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void UpdateScore()
     {
-        scoreText.text = "$ " + score.ToString();
+        scoreText.text =  score.ToString();
     }
 
     /// <summary>
@@ -78,35 +78,34 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void FinishGame()
     {
-        popupText.text = "FAIRY EARNINGS = $" + score.ToString() + "\n PRESS 'R' TO RESTART";
+        popupText.text = "FINAL SCORE = " + score.ToString() + "\n PRESS 'R' TO RESTART";
         popupCoroutine = InstructionFade(1, 0, 2);
         StartCoroutine(popupCoroutine);
         gameOver = true;
     }
 
 
-    /// <summary>
-    /// Plays audio sent to it
-    /// </summary>
-    /// <param name="clip"></param>The clip to be played
-    public void PlayAudio(AudioClip clip)
-    {
-        GetComponent<AudioSource>().PlayOneShot(clip, 0.7f);
-    }
+
 
     /// <summary>
     /// Handles collecting items
     /// </summary>
     /// <param name="value"></param>The value of the collected item
-    public void CollectItem(float value)
+    public void CollectItem(float value, AudioClip clip)
     {
         if(gameOver)
         {
             return;
         }
         score += value;
-        PlayAudio(collectAudio);
+        GetComponent<AudioSource>().PlayOneShot(clip, 0.7f);
+        numberOfCoins--;
         UpdateScore();
+        //If that's the last coin, the game is over. 
+        if(numberOfCoins <= 0)
+        {
+            FinishGame();
+        }
     }
 
     /// <summary>
@@ -131,25 +130,25 @@ public class GameManager : MonoBehaviour
         yield return null;
     }
 
+
     /// <summary>
-    /// Handles the game time (how much time is left in the game)
+    /// Everytime the amount of time passes that decreases the score, decrease it a certain amount. 
     /// </summary>
     /// <returns></returns>
-    private IEnumerator GameTime(float waitTime)
+    private IEnumerator ScoreReducer(float waitTime)
     {
         //Wait the amount of time equal to the instructions before starting
         yield return new WaitForSeconds(waitTime);
 
-        //Every second, reduce the amount of time left (and update time text)
-        while(gameTime > 0)
+        while (!gameOver)
         {
-            yield return new WaitForSeconds(1);
-            gameTime--;
-            timeText.text = gameTime.ToString() + " s";
+            score -= scoreReductionValue;
+            UpdateScore();
+            yield return new WaitForSeconds(secondsBetweenReduction);
         }
-        //When no time is left, end the game
-        FinishGame();
-        yield return null;
     }
+
+
+
 
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 /// <summary>
 /// Set destination for robot to go
@@ -10,7 +11,7 @@ public class RaycastDestinationSetter : MonoBehaviour {
 	public float weaponRange = 500f;                                     // Distance in Unity units over which the player can fire
 	public Transform gunEnd;                                            // Holds a reference to the gun end object, marking the muzzle location of the gun
 	public DirectedAgent[] directedAgents;
-
+	public Image[] bgImages;
 
 	private DirectedAgent directedAgent;                                    //Agent to direct
 	private Camera fpsCam;                                              // Holds a reference to the first person camera
@@ -22,7 +23,9 @@ public class RaycastDestinationSetter : MonoBehaviour {
 
 	void Start () 
 	{
-		directedAgent = directedAgents[0];
+		//Set the agent initially
+		SetAgent(0);
+
 
 		// Get and store a reference to our LineRenderer component
 		laserLine = GetComponent<LineRenderer>();
@@ -37,6 +40,7 @@ public class RaycastDestinationSetter : MonoBehaviour {
 
 	void Update () 
 	{
+		//Take in input for switching agents
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			SetAgent(0);
@@ -103,9 +107,18 @@ public class RaycastDestinationSetter : MonoBehaviour {
 		laserLine.enabled = false;
 	}
 
+	/// <summary>
+	/// Set the agent that we're currently directing
+	/// </summary>
+	/// <param name="agentNumber"></param>the agent number
 	private void SetAgent(int agentNumber)
 	{
 		directedAgent = directedAgents[agentNumber];
-		print("Current agent = " + agentNumber);
+		//Turn off (and on) the correct bg image
+		for (int i = 0; i < bgImages.Length; i++)
+		{
+			bgImages[i].enabled = false;
+		}
+		bgImages[agentNumber].enabled = true;
 	}
 }

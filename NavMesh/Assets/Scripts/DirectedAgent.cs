@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Set the destination for the current directed agent
+/// </summary>
 public class DirectedAgent : MonoBehaviour
 {
     private NavMeshAgent agent;
